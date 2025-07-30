@@ -9,13 +9,13 @@ if (POLICY CMP0141)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-project ("Text_Editor")
+project ("text_editor")
 
 # Add source to this project's executable.
-add_executable (Text_Editor "text_editor.c" "text_editor.h" "terminal.c" "output.c" "data.h" "init.c")
+add_executable (text_editor "main/text_editor.c" "main/text_editor.h" "main/terminal.c" "main/output.c" "main/data.h" "main/init.c" "main/append_buffer.c" "main/append_buffer.h" "main/input.c")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET Text_Editor PROPERTY CXX_STANDARD 20)
+  set_property(TARGET text_editor PROPERTY C_STANDARD 23)
 endif()
 
 # TODO: Add tests and install targets if needed.
