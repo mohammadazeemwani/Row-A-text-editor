@@ -1,8 +1,6 @@
 #include "text_editor.h"
 #include "data.h"
 
-#define CTRL_KEY(k) ((k) & 0x1f)
-
 HANDLE hStdin;
 
 void die(const char *s) {
@@ -26,31 +24,31 @@ void enableRawMode(void) {
     SetConsoleMode(hStdin, raw_mode);
 }
 
-char editorReadKey() {
+int editorReadKey() {
     int nread;
     char c = '\0';
     while ((nread = read(_fileno(stdin), &c, 1)) != 1) {
         if (nread == -1 && errno != EAGAIN) die("read");
     }
-    return c;
-}
 
-void editorProcessKeypress() {
-    char c = editorReadKey();
+    if (c == '\x1b') {
+        char seq[3];
 
-    switch (c) {
-        case CTRL_KEY('q'):
-            write(_fileno(stdout), "\x1b[2J", 4);
-            write(_fileno(stdout), "\x1b[H", 3);
-            exit(0);
-            break;
+        if (read(_fileno(stdin), &seq[0], 1) != 1) return '\x1b';
+        if (read(_fileno(stdin), &seq[1], 1) != 1) return '\x1b';
+        
+        if (seq[0] == '[') {
+            switch (seq[1]) {
+            case 'A': return ARROW_UP;
+            case 'B': return ARROW_DOWN;
+            case 'C': return ARROW_RIGHT;
+            case 'D': return ARROW_LEFT;
+            }
+        }
 
-        case 'w':
-        case 's':
-        case 'a':
-        case 'd':
-            editorMoveCursor(c);
-            break;
+        return '\x1b';
+    } else {
+        return c;
     }
 }
 
