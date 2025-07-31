@@ -11,18 +11,17 @@
 
 #define CTRL_KEY(k) ((k) & 0x1f)
 
-//#include <winuser.h>
-//enum editorKey {
-//	ARROW_LEFT = 1000,
-//	ARROW_RIGHT,
-//	ARROW_UP,
-//	ARROW_DOWN
-//};
+#include <winuser.h>
 enum editorKey {
-	ARROW_LEFT = VK_LEFT,
-	ARROW_RIGHT = VK_RIGHT,
-	ARROW_UP = VK_UP,
-	ARROW_DOWN = VK_DOWN
+	ARROW_LEFT = 1000,
+	ARROW_RIGHT,
+	ARROW_UP,
+	ARROW_DOWN,
+	DEL_KEY,
+	HOME_KEY,
+	END_KEY,
+	PAGE_UP,
+	PAGE_DOWN,
 };
 
 void die(const char *s);

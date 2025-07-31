@@ -41,7 +41,16 @@ int editorReadKey() {
         case VK_DOWN    : return ARROW_DOWN;
         case VK_LEFT    : return ARROW_LEFT;
         case VK_RIGHT   : return ARROW_RIGHT;
+        
+        case VK_DELETE  : return DEL_KEY;
+        case VK_HOME    : return HOME_KEY;
+        case VK_END     : return END_KEY;
+
+        case VK_PRIOR   : return PAGE_UP;
+        case VK_NEXT    : return PAGE_DOWN;
+        
         case VK_ESCAPE  : return 27;
+        
         default         : return c.Event.KeyEvent.uChar.AsciiChar;
         }
     }
