@@ -26,29 +26,24 @@ void enableRawMode(void) {
 
 int editorReadKey() {
     int nread;
-    char c = '\0';
-    while ((nread = read(_fileno(stdin), &c, 1)) != 1) {
-        if (nread == -1 && errno != EAGAIN) die("read");
+    INPUT_RECORD c;
+    DWORD events;
+    HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
+
+    while ((nread = ReadConsoleInput(hInput, &c, 1, &events)) != 1) {
+        if (nread == 0 && errno != EAGAIN) die("read");
     }
 
-    if (c == '\x1b') {
-        char seq[3];
-
-        if (read(_fileno(stdin), &seq[0], 1) != 1) return '\x1b';
-        if (read(_fileno(stdin), &seq[1], 1) != 1) return '\x1b';
-        
-        if (seq[0] == '[') {
-            switch (seq[1]) {
-            case 'A': return ARROW_UP;
-            case 'B': return ARROW_DOWN;
-            case 'C': return ARROW_RIGHT;
-            case 'D': return ARROW_LEFT;
-            }
+    if (c.EventType == KEY_EVENT) {
+        WORD vk = c.Event.KeyEvent.wVirtualKeyCode;
+        switch (vk) {
+        case VK_UP      : return ARROW_UP;
+        case VK_DOWN    : return ARROW_DOWN;
+        case VK_LEFT    : return ARROW_LEFT;
+        case VK_RIGHT   : return ARROW_RIGHT;
+        case VK_ESCAPE  : return 27;
+        default         : return c.Event.KeyEvent.uChar.AsciiChar;
         }
-
-        return '\x1b';
-    } else {
-        return c;
     }
 }
 
