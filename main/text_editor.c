@@ -7,6 +7,8 @@ int main(int argc, char *argv[]) {
         editorOpen(argv[1]);
     };
 
+    editorSetStatusMessage("HELP: Ctrl-Q = quit");
+
     for (;;) {
         editorRefreshScreen();
         editorProcessKeypress();

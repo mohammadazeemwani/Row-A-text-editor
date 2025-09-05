@@ -17,6 +17,9 @@ struct editorConfig {
 	int screencols;
 	int numrows;
 	erow *row;
+	char *filename;
+	char statusmsg[80];
+	time_t statusmsg_time;
 	DWORD orig_mode;
 };
 

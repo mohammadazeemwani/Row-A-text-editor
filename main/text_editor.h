@@ -8,6 +8,7 @@
 #include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <windows.h>
 
 #define CTRL_KEY(k) ((k) & 0x1f)
@@ -46,3 +47,7 @@ void editorUpdateRow(erow *row);
 void editorScroll();
 
 int editorRowCxToRx(erow *row, int cx);
+
+void editorSetStatusMessage(const char *fmt, ...);
+void editorDrawStatusBar(struct abuf *ab);
+void editorDrawMessageBar(struct abuf *ab);
