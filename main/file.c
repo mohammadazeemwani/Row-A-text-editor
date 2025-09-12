@@ -1,3 +1,4 @@
+#include <fcntl.h>
 #include <sys/types.h>
 #include <string.h>
 
@@ -6,7 +7,7 @@
 
 void editorOpen(char *filename) {
     free(E.filename);
-    E.filename = strdup(filename);
+    E.filename = _strdup(filename);
 
     FILE *fp = fopen(filename, "r");
     if (!fp) die("fopen");
@@ -24,9 +25,56 @@ void editorOpen(char *filename) {
             linelen--;
         }
 
-        editorAppendRow(line, linelen);
+        editorInsertRow(E.numrows, line, linelen);
     }
 
     free(line);
     fclose(fp);
+    E.dirty = 0;
+}
+
+char *editorRowsToString(int *buflen) {
+    int totlen = 0;
+    int j;
+    for (j = 0; j < E.numrows; j++)
+        totlen += E.row[j].size + 1;
+    *buflen = totlen;
+    char *buf = malloc(totlen);
+    char *p = buf;
+    for (j = 0; j < E.numrows; j++) {
+        memcpy(p, E.row[j].chars, E.row[j].size);
+        p += E.row[j].size;
+        *p = '\n';
+        p++;
+    }
+    return buf;
+}
+
+void editorSave() {
+    if (E.filename == NULL) {
+        E.filename = editorPrompt("Save as: %s (ESC to cancel)");
+        if (E.filename == NULL) {
+            editorSetStatusMessage("Save aborted");
+            return;
+        }
+    }
+
+    int len;
+    char *buf = editorRowsToString(&len);
+    int fd = open(E.filename, O_RDWR | O_CREAT, 0644);
+    //ftruncate(fd, len);
+    if (fd != -1) {
+        if (_chsize_s(fd, len) != -1) {
+            if (_write(fd, buf, len) == len) {
+                _close(fd);
+                free(buf);
+                E.dirty = 0;
+                editorSetStatusMessage("%d bytes written to disk", len);
+                return;
+            }
+        }
+        _close(fd);
+    }
+    free(buf);
+    editorSetStatusMessage("Can't save! I/O error: %s", strerror(errno));
 }

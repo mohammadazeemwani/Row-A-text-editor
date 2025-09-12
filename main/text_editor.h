@@ -2,6 +2,7 @@
 
 #define EDITOR_VERSION "0.0.1"
 #define TAB_STOP 8
+#define QUIT_TIMES 3
 
 #include <ctype.h>
 #include <errno.h>
@@ -15,6 +16,7 @@
 
 #include <winuser.h>
 enum editorKey {
+	BACKSPACE = 127,
 	ARROW_LEFT = 1000,
 	ARROW_RIGHT,
 	ARROW_UP,
@@ -42,7 +44,7 @@ void editorProcessKeypress();
 
 void editorOpen(char *filename);
 
-void editorAppendRow(char *s, size_t len);
+void editorInsertRow(int at, char *s, size_t len);
 void editorUpdateRow(erow *row);
 void editorScroll();
 
@@ -51,3 +53,19 @@ int editorRowCxToRx(erow *row, int cx);
 void editorSetStatusMessage(const char *fmt, ...);
 void editorDrawStatusBar(struct abuf *ab);
 void editorDrawMessageBar(struct abuf *ab);
+
+
+void editorRowInsertChar(erow *row, int at, int c);
+void editorRowDelChar(erow *row, int at);
+
+void editorInsertChar(int c);
+void editorDelChar();
+
+
+void editorFreeRow(erow *row);
+void editorDelRow(int at);
+void editorRowAppendString(erow *row, char *s, size_t len);
+
+void editorInsertNewline();
+
+char *editorPrompt(char *prompt);

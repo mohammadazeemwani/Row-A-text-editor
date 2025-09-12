@@ -1,3 +1,5 @@
+#pragma once
+
 struct abuf {
 	char *b;
 	int len;
