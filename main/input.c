@@ -1,7 +1,6 @@
 #include "text_editor.h"
 #include "data.h"
 
-
 void editorMoveCursor(int key) {
 	erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
 	switch (key) {
@@ -75,8 +74,12 @@ void editorProcessKeypress() {
 			E.cx = E.row[E.cy].size;
 		break;
 
+	case CTRL_KEY('f'):
+		editorFind();
+		break;
+
 	case BACKSPACE:
-	case CTRL_KEY('h'):
+	//case CTRL_KEY('h'):
 	case DEL_KEY:
 		if (c == DEL_KEY) editorMoveCursor(ARROW_RIGHT);
 		editorDelChar();
@@ -116,7 +119,7 @@ void editorProcessKeypress() {
 	quit_times = QUIT_TIMES;
 }
 
-char *editorPrompt(char *prompt) {
+char *editorPrompt(char *prompt, void (*callback)(char *, int)) {
 	size_t bufsize = 128;
 	char *buf = malloc(bufsize);
 	size_t buflen = 0;
@@ -129,20 +132,28 @@ char *editorPrompt(char *prompt) {
 			if (buflen != 0) buf[--buflen] = '\0';
 		} else if (c == '\x1b') {
 			editorSetStatusMessage("");
+			if (callback) callback(buf, c);
 			free(buf);
 			return NULL;
 		} else if (c == '\r') {
 			if (buflen != 0) {
 				editorSetStatusMessage("");
+				if (callback) callback(buf, c);
 				return buf;
 			}
 		} else if (c >= 0 && c <= 255 && !iscntrl(c)) {
 			if (buflen == bufsize - 1) {
 				bufsize *= 2;
-				buf = realloc(buf, bufsize);
+				//buf = realloc(buf, bufsize);
+				char *newbuf = realloc(buf, bufsize);
+				if (newbuf == NULL) {
+					die("editorPrompt - realloc");
+				}
 			}
 			buf[buflen++] = c;
 			buf[buflen] = '\0';
 		}
+	
+	if (callback) callback(buf, c);
 	}
 }

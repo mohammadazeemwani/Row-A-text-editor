@@ -16,7 +16,8 @@
 
 #include <winuser.h>
 enum editorKey {
-	BACKSPACE = 127,
+	//BACKSPACE = 127,
+	BACKSPACE = 8,
 	ARROW_LEFT = 1000,
 	ARROW_RIGHT,
 	ARROW_UP,
@@ -43,6 +44,8 @@ void initEditor();
 void editorProcessKeypress();
 
 void editorOpen(char *filename);
+void editorSave();
+char *editorRowsToString(int *buflen);
 
 void editorInsertRow(int at, char *s, size_t len);
 void editorUpdateRow(erow *row);
@@ -68,4 +71,8 @@ void editorRowAppendString(erow *row, char *s, size_t len);
 
 void editorInsertNewline();
 
-char *editorPrompt(char *prompt);
+char *editorPrompt(char *prompt, void (*callback)(char *, int));
+
+int editorRowRxToCx(erow *row, int rx);
+
+void editorFind();
