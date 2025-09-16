@@ -18,7 +18,7 @@ void editorOpen(char *filename) {
     char *line = malloc(linecap);
     if (!line) die("malloc");
 
-    while (fgets(line, linecap, fp)) {
+    while (fgets(line, (int)linecap, fp)) {
         ptrdiff_t linelen = strlen(line);
 
         // trim newline and carriage return
@@ -42,6 +42,7 @@ char *editorRowsToString(int *buflen) {
         totlen += E.row[j].size + 1;
     *buflen = totlen;
     char *buf = malloc(totlen);
+    if (!buf) die("editorRowsToString - malloc");
     char *p = buf;
     for (j = 0; j < E.numrows; j++) {
         memcpy(p, E.row[j].chars, E.row[j].size);

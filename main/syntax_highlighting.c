@@ -2,8 +2,26 @@
 #include "data.h"
 #include "file_types.h"
 
+int editorSyntaxToColor(int hl) {
+    switch (hl) {
+    case HL_COMMENT:
+    case HL_MLCOMMENT: return 36;
+    case HL_KEYWORD1: return 33;
+    case HL_KEYWORD2: return 32;
+    case HL_STRING: return 35;
+    case HL_NUMBER: return 31;
+    case HL_MATCH: return 34;
+    default: return 37;
+    }
+}
+
 void editorUpdateSyntax(erow *row) {
-    row->hl = realloc(row->hl, row->rsize);
+    //row->hl = realloc(row->hl, row->rsize);
+    unsigned char *new_hl = realloc(row->hl, row->rsize);
+    if (new_hl == NULL) {
+        return;
+    }
+    row->hl = new_hl;
     memset(row->hl, HL_NORMAL, row->rsize);
 
     if (E.syntax == NULL) return;
@@ -13,9 +31,9 @@ void editorUpdateSyntax(erow *row) {
     char *mcs = E.syntax->multiline_comment_start;
     char *mce = E.syntax->multiline_comment_end;
     
-    int scs_len = scs ? strlen(scs) : 0;
-    int mcs_len = mcs ? strlen(mcs) : 0;
-    int mce_len = mce ? strlen(mce) : 0;
+    int scs_len = scs ? (int)strlen(scs) : 0;
+    int mcs_len = mcs ? (int)strlen(mcs) : 0;
+    int mce_len = mce ? (int)strlen(mce) : 0;
     
     int prev_sep = 1;
     int in_string = 0;
@@ -89,7 +107,7 @@ void editorUpdateSyntax(erow *row) {
         if (prev_sep) {
             int j;
             for (j = 0; keywords[j]; j++) {
-                int klen = strlen(keywords[j]);
+                int klen = (int)strlen(keywords[j]);
                 int kw2 = keywords[j][klen - 1] == '|';
                 if (kw2) klen--;
         
@@ -116,18 +134,6 @@ void editorUpdateSyntax(erow *row) {
         editorUpdateSyntax(&E.row[row->idx + 1]);
 }
 
-int editorSyntaxToColor(int hl) {
-    switch (hl) {
-    case HL_COMMENT:
-    case HL_MLCOMMENT: return 36;
-    case HL_KEYWORD1: return 33;
-    case HL_KEYWORD2: return 32;
-    case HL_STRING: return 35;
-    case HL_NUMBER: return 31;
-    case HL_MATCH: return 34;
-    default: return 37;
-    }
-}
 
 int is_separator(int c) {
     return isspace(c) || c == '\0' || strchr(",.()+-/*=~%<>[];", c) != NULL;

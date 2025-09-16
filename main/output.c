@@ -82,7 +82,7 @@ void editorRefreshScreen() {
 
 	char buf[32];
 	snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1, (E.rx - E.coloff) + 1);
-	abAppend(&ab, buf, strlen(buf));
+	abAppend(&ab, buf, (int)(strlen(buf)));
 
 	abAppend(&ab, "\x1b[?25h", 6);
 
@@ -144,7 +144,7 @@ void editorSetStatusMessage(const char *fmt, ...) {
 
 void editorDrawMessageBar(struct abuf *ab) {
 	abAppend(ab, "\x1b[K", 3);
-	int msglen = strlen(E.statusmsg);
+	int msglen = (int)strlen(E.statusmsg);
 	if (msglen > E.screencols) msglen = E.screencols;
 	if (msglen && time(NULL) - E.statusmsg_time < 5)
 		abAppend(ab, E.statusmsg, msglen);
