@@ -28,7 +28,39 @@ void editorDrawRows(struct abuf *ab) {
 			int len = E.row[filerow].rsize - E.coloff;
 			if (len < 0) len = 0;
 			if (len > E.screencols) len = E.screencols;
-			abAppend(ab, &E.row[filerow].render[E.coloff], len);
+			char *c = &E.row[filerow].render[E.coloff];
+			unsigned char *hl = &E.row[filerow].hl[E.coloff];
+			int current_color = -1;
+			int j;
+			for (j = 0; j < len; j++) {
+				if (iscntrl(c[j])) {
+					char sym = (c[j] <= 26) ? '@' + c[j] : '?';
+					abAppend(ab, "\x1b[7m", 4);
+					abAppend(ab, &sym, 1);
+					abAppend(ab, "\x1b[m", 3);
+					if (current_color != -1) {
+						char buf[16];
+						int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", current_color);
+						abAppend(ab, buf, clen);
+					}
+				} else if (hl[j] == HL_NORMAL) {
+					if (current_color != -1) {
+						abAppend(ab, "\x1b[39m", 5);
+						current_color = -1;
+					}
+					abAppend(ab, &c[j], 1);
+				} else {
+					int color = editorSyntaxToColor(hl[j]);
+					if (color != current_color) {
+						current_color = color;
+						char buf[16];
+						int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", color);
+						abAppend(ab, buf, clen);
+					}
+					abAppend(ab, &c[j], 1);
+				}
+			}
+			abAppend(ab, "\x1b[39m", 5);
 		}
 
 		abAppend(ab, "\x1b[K", 3);
@@ -84,8 +116,8 @@ void editorDrawStatusBar(struct abuf *ab) {
 	int len = snprintf(status, sizeof(status), "%.20s - %d lines %s",
 		E.filename ? E.filename : "[No Name]", E.numrows,
 		E.dirty ? "(modified)" : "");
-	int rlen = snprintf(rstatus, sizeof(rstatus), "%d/%d",
-		E.cy + 1, E.numrows);
+	int rlen = snprintf(rstatus, sizeof(rstatus), "%s | %d/%d",
+		E.syntax ? E.syntax->filetype : "no ft", E.cy + 1, E.numrows);
 	if (len > E.screencols) len = E.screencols;
 	abAppend(ab, status, len);
 

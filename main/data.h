@@ -1,11 +1,24 @@
 #pragma once
 #include "text_editor.h"
 
+struct editorSyntax {
+	char *filetype;
+	char **filematch;
+	char **keywords;
+	char *singleline_comment_start;
+	char *multiline_comment_start;
+	char *multiline_comment_end;
+	int flags;
+};
+
 typedef struct erow {
+	int idx;
 	int size;
 	int rsize;
 	char *chars;
 	char *render;
+	unsigned char *hl;
+	int hl_open_comment;
 } erow;
 
 struct editorConfig {
@@ -21,6 +34,7 @@ struct editorConfig {
 	char *filename;
 	char statusmsg[80];
 	time_t statusmsg_time;
+	struct editorSyntax *syntax;
 	DWORD orig_mode;
 };
 

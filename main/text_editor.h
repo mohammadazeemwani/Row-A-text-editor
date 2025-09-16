@@ -31,6 +31,19 @@ enum editorKey {
 
 typedef struct erow erow;
 
+enum editorHighlight {
+	HL_NORMAL = 0,
+	HL_COMMENT,
+	HL_MLCOMMENT,
+	HL_KEYWORD1,
+	HL_KEYWORD2,
+	HL_STRING,
+	HL_NUMBER,
+	HL_MATCH
+};
+
+#define HL_HIGHLIGHT_NUMBERS (1<<0)
+#define HL_HIGHLIGHT_STRINGS (1<<1)
 
 void die(const char *s);
 void disableRawMode(void);
@@ -76,3 +89,6 @@ char *editorPrompt(char *prompt, void (*callback)(char *, int));
 int editorRowRxToCx(erow *row, int rx);
 
 void editorFind();
+
+
+void editorSelectSyntaxHighlight();

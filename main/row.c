@@ -19,6 +19,8 @@ void editorUpdateRow(erow *row) {
 	}
 	row->render[idx] = '\0';
 	row->rsize = idx;
+
+	editorUpdateSyntax(row);
 }
 
 void editorInsertRow(int at, char *s, size_t len) {
@@ -31,6 +33,10 @@ void editorInsertRow(int at, char *s, size_t len) {
 	}
 	E.row = new_rows;
 	memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (E.numrows - at));
+	for (int j = at + 1; j <= E.numrows; j++) E.row[j].idx++;
+
+
+	E.row[at].idx = at;
 
 	E.row[at].size = len;
 	E.row[at].chars = malloc(len + 1);
@@ -38,7 +44,10 @@ void editorInsertRow(int at, char *s, size_t len) {
 	E.row[at].chars[len] = '\0';
 	E.row[at].rsize = 0;
 	E.row[at].render = NULL;
+	E.row[at].hl = NULL;
+	E.row[at].hl_open_comment = 0;
 	editorUpdateRow(&E.row[at]);
+	
 	E.numrows++;
 	E.dirty++;
 }
@@ -62,6 +71,7 @@ void editorRowInsertChar(erow *row, int at, int c) {
 	if (new_chars == NULL) {
 		return;
 	}
+	row->chars = new_chars;
 	memmove(&row->chars[at + 1], &row->chars[at], row->size - at + 1);
 	row->size++;
 	row->chars[at] = c;
@@ -80,6 +90,7 @@ void editorRowDelChar(erow *row, int at) {
 void editorFreeRow(erow *row) {
 	free(row->render);
 	free(row->chars);
+	free(row->hl);
 }
 
 void editorDelRow(int at) {
@@ -96,7 +107,7 @@ void editorRowAppendString(erow *row, char *s, size_t len) {
 	if (new_chars == NULL) {
 		return;
 	}
-
+	row->chars = new_chars;
 	memcpy(&row->chars[row->size], s, len);
 	row->size += len;
 	row->chars[row->size] = '\0';
