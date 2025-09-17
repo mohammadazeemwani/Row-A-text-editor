@@ -95,3 +95,5 @@ void editorSelectSyntaxHighlight();
 void editorUpdateSyntax(erow *row);
 int is_separator(int c);
 int editorSyntaxToColor(int hl);
+
+void editorDrawHelpBar(struct abuf *ab);

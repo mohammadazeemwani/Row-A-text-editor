@@ -12,6 +12,7 @@ void disableRawMode(void) {
     SetConsoleMode(hStdin, E.orig_mode);
 }
 
+// ChatGPT helped converting this function to Windows.
 void enableRawMode(void) {
     SetConsoleCtrlHandler(NULL, TRUE);
 
@@ -24,6 +25,7 @@ void enableRawMode(void) {
     SetConsoleMode(hStdin, raw_mode);
 }
 
+// ChatGPT helped converting this to Windows.
 int editorReadKey(void) {
     HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
 
@@ -40,7 +42,6 @@ int editorReadKey(void) {
             WCHAR ch = rec.Event.KeyEvent.uChar.UnicodeChar;
             DWORD ctrl = rec.Event.KeyEvent.dwControlKeyState;
 
-            // Navigation / special keys
             switch (vk) {
             case VK_UP:      return ARROW_UP;
             case VK_DOWN:    return ARROW_DOWN;
@@ -52,37 +53,29 @@ int editorReadKey(void) {
             case VK_HOME:    return HOME_KEY;
             case VK_END:     return END_KEY;
 
-            case VK_PRIOR:   return PAGE_UP;    // Page Up
-            case VK_NEXT:    return PAGE_DOWN;  // Page Down
+            case VK_PRIOR:   return PAGE_UP;    
+            case VK_NEXT:    return PAGE_DOWN;  
+            
+            case VK_TAB:    return '\t';
 
             case VK_ESCAPE:  return 27;
             }
 
-            // ========================================================================
-            // STILL NEED to handle these better, maybe I should handle individually.
-            // ========================================================================
+            if (ch == CTRL_KEY('q')) return CTRL_KEY('q');
+            if (ch == CTRL_KEY('f')) return CTRL_KEY('f');
+            if (ch == CTRL_KEY('s')) return CTRL_KEY('s');
+            if (ch == CTRL_KEY('h')) return CTRL_KEY('h');
 
-            // Ctrl+letter handling
-            if (ctrl & (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)) {
-                if (vk >= 'A' && vk <= 'Z') {
-                    return CTRL_KEY(vk);
-                }
-            }
-
-            // Normal printable characters
             if (ch >= 32 && ch <= 126) {
                 return (int)ch;
             }
 
-            // Enter / carriage return
             if (ch == 13) {
                 return '\r';
             }
         }
-        // ignore key releases and non-key events
     }
 }
-
 
 int getWindowSize(int *rows, int *cols) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);

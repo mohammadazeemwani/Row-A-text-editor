@@ -5,6 +5,7 @@
 #include "text_editor.h"
 #include "data.h"
 
+// ChatGPT helped converting this to Windows.
 void editorOpen(char *filename) {
     free(E.filename);
     E.filename = _strdup(filename);
@@ -16,7 +17,7 @@ void editorOpen(char *filename) {
 
     size_t linecap = 1024;            // fixed buffer size
     char *line = malloc(linecap);
-    if (!line) die("malloc");
+    if (!line) die("editorOpen - malloc");
 
     while (fgets(line, (int)linecap, fp)) {
         ptrdiff_t linelen = strlen(line);

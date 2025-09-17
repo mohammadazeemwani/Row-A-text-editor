@@ -7,6 +7,7 @@ void initEditor() {
 	E.rx = 0;
 	E.rowoff = 0;
 	E.coloff = 0;
+	E.lnwidth = 0;
 	E.numrows = 0;
 	E.row = NULL;
 	E.dirty = 0;
@@ -16,5 +17,6 @@ void initEditor() {
 	E.syntax = NULL;
 
 	if (getWindowSize(&E.screenrows, &E.screencols) == -1) die("getWindowsize");
-	E.screenrows -= 2;
+	//E.screenrows -= 2;
+	E.screenrows -= 3;
 }

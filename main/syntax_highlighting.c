@@ -16,11 +16,14 @@ int editorSyntaxToColor(int hl) {
 }
 
 void editorUpdateSyntax(erow *row) {
-    //row->hl = realloc(row->hl, row->rsize);
-    unsigned char *new_hl = realloc(row->hl, row->rsize);
-    if (new_hl == NULL) {
+    if (row->rsize <= 0) {
+        free(row->hl);
+        row->hl = NULL;
         return;
     }
+
+    unsigned char *new_hl = realloc(row->hl, row->rsize);
+    if (!new_hl) die("editorUpdateSyntax - realloc");
     row->hl = new_hl;
     memset(row->hl, HL_NORMAL, row->rsize);
 

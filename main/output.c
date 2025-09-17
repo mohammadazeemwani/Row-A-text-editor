@@ -6,8 +6,21 @@
 
 void editorDrawRows(struct abuf *ab) {
 	int y;
+	E.lnwidth = snprintf(NULL, 0, "%d", E.numrows) + 1;
+
 	for (y = 0; y < E.screenrows; y++) {
 		int filerow = y + E.rowoff;
+
+		if (filerow == E.cy) {
+			char lnbuf[16];
+			int lnlen = snprintf(lnbuf, sizeof(lnbuf), "\x1b[7m%*d \x1b[m", E.lnwidth - 1, filerow + 1);
+			abAppend(ab, lnbuf, lnlen);
+		} else {
+			char lnbuf[16];
+			int lnlen = snprintf(lnbuf, sizeof(lnbuf), "%*d ", E.lnwidth - 1, filerow + 1);
+			abAppend(ab, lnbuf, lnlen);
+		}
+
 		if (filerow >= E.numrows) {
 			if (E.numrows == 0 && y == E.screenrows / 3) {
 				char welcome[80];
@@ -76,12 +89,17 @@ void editorRefreshScreen() {
 	abAppend(&ab, "\x1b[?25l", 6);
 	abAppend(&ab, "\x1b[H", 3);
 
+	editorDrawHelpBar(&ab);
 	editorDrawRows(&ab);
 	editorDrawStatusBar(&ab);
 	editorDrawMessageBar(&ab);
 
 	char buf[32];
-	snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1, (E.rx - E.coloff) + 1);
+	snprintf(buf, sizeof(buf), "\x1b[%d;%dH",
+		//(E.cy - E.rowoff) + 1,
+		(E.cy - E.rowoff) + 2,
+		(E.rx - E.coloff) + 1 + E.lnwidth);
+
 	abAppend(&ab, buf, (int)(strlen(buf)));
 
 	abAppend(&ab, "\x1b[?25h", 6);
@@ -117,7 +135,7 @@ void editorDrawStatusBar(struct abuf *ab) {
 		E.filename ? E.filename : "[No Name]", E.numrows,
 		E.dirty ? "(modified)" : "");
 	int rlen = snprintf(rstatus, sizeof(rstatus), "%s | %d/%d",
-		E.syntax ? E.syntax->filetype : "no ft", E.cy + 1, E.numrows);
+		E.syntax ? E.syntax->filetype : "plain text", E.cy + 1, E.numrows);
 	if (len > E.screencols) len = E.screencols;
 	abAppend(ab, status, len);
 
@@ -148,4 +166,22 @@ void editorDrawMessageBar(struct abuf *ab) {
 	if (msglen > E.screencols) msglen = E.screencols;
 	if (msglen && time(NULL) - E.statusmsg_time < 5)
 		abAppend(ab, E.statusmsg, msglen);
+}
+
+void editorDrawHelpBar(struct abuf *ab) {
+	abAppend(ab, "\x1b[7m", 4);
+
+	const char *help = "HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find";
+	int len = (int)strlen(help);
+	if (len > E.screencols) len = E.screencols;
+
+	abAppend(ab, help, len);
+
+	while (len < E.screencols) {
+		abAppend(ab, " ", 1);
+		len++;
+	}
+
+	abAppend(ab, "\x1b[m", 3);
+	abAppend(ab, "\r\n", 2); 
 }
