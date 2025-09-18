@@ -1,28 +1,38 @@
-# Row - a text editor
+# *Row* - a text editor
 
 ## Video Demo:  <URL HERE>
 
 ## Description:
 
-Row is a text or code editor that supports editing any text file. It currently supports syntax highlighting for C and Python.
-It has all the basic text editing you would require such as line numbers, find, selection, highlighting, saving, reading files, etc.
+***Row*** is a text editor which comes with all the basic functionalies one would require, such as:
+- <ins>Reading files</ins>
+- <ins>Showing *line-numbers*</ins>
+- <ins>Text search</ins> *with navigation support between multiple instances*
+- <ins>Text selection</ins>
+- <ins>Syntax highlighting</ins> *currently for C and Python code files*
+- <ins>Saving file</ins> `Ctrl`+`S`
+- <ins>Extention detection</ins> *of saved files*
 
-This is my first experience building a app in 100% C.
-I wanted to learn how to build an app from the ground up and realized there are always API's to talk to even at terminal level.
+This has been my first experience, building an app; 100% in C.
 
-It currently only supports Windows but I might make it portable in future.
+My main objective was to build an app from *ground up* and along the way I realized; there are always API's to talk to, even at terminal level.
 
-I tested it mostly on my own so there it might be some bugs and I also showed it to some of my friends.
+It currently only has support for **Windows**; for which you can find executables in the [releases section](https://github.com/Amaan-E/text_editor/releases).  
+Support for additional platforms will be added in future releases. So stay tuned.
+
+I tested it mostly on my own, so it still might have some bugs.  
+Plus I shared it with some of my friends too.
 
 ## Development Process
 
-I started with https://viewsourcecode.org/snaptoken/kilo/index.html, adapted it to Windows as I went along, then completed some of the tasks and implemented some of my own.
+I started with this guide: https://viewsourcecode.org/snaptoken/kilo/index.html.  
+As I went along, I completed some of the tasks while adapting it for *Windows* and implemented some of my own.
 
-I followed https://www.conventionalcommits.org/en/v1.0.0/ for all my commits.
+I made use of the following specification for commits: https://www.conventionalcommits.org/en/v1.0.0/
 
-Row was developed using Visual Studio 2022 with the C make profile.
+***Row*** was developed using *Visual Studio 2022* with the *C make profile*.
 
-This project is built in C uses some of standard library along with some Windows specific API for keyboard handling and terminal handling.
+This project is built in **C** and makes use of ***standard library*** along with APIs specific for *Windows* (which includes handling of keyboard and terminal).
 
 ## Source Files
 
@@ -57,10 +67,14 @@ This is very Windows specific.
 
 ## Design Choices
 
-- I initially had help as part of status bar just like original kilo but then I decided after seeing some of my friends just forgot about it after typing while using that help should always be present so I moved it to top.
-Current line is highlighed by having the current line number with inverted colours.
+- The *help-section* was initially the part of *status-bar* just like in the [kilo](https://viewsourcecode.org/snaptoken/kilo/index.html) (*guide I was following*), where *help-section* disappeared as soon as someone begins to write. My friends, after using it for the very first time, complained about the same to be a UserExperience flaw; which I addressed by moving the *help-section* altogether to the top of the interface (*where it now persists*).
 
-- I initially was going to develop it in one single file just like the original kilo editor but then I decided to split it up it different files and later also into different headers.
+- Indication of *Current-line* is done by highlighting the line number at left-most of each row. Inverted colors are used to provide a nice visual distinction.
+
+- Source code is in accordance with ***separation of concerns*** which I did as oppose to bloating source in a single file.
+
 - I was ignoring the malloc, realloc issues error, but later decided to handle them using my die function for robustness.
+
 ## Future Plans
-- I might implement CTRL-E which will provide AI explanations for selected text.
+- To provide AI explanation of selected text • Using `CTRL`+`E`
+- To provide shortcut for "Save and Exit" scenario.
