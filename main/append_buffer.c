@@ -1,5 +1,8 @@
-#include "text_editor.h"
 #include "append_buffer.h"
+#include "text_editor.h"
+
+#include <stdlib.h>
+#include <string.h>
 
 void abAppend(struct abuf *ab, const char *s, int len) {
 	char *new = realloc(ab->b, ab->len + len);

@@ -1,5 +1,7 @@
-#include "text_editor.h"
 #include "data.h"
+#include "editor_operations.h"
+#include "row.h"
+#include "text_editor.h"
 
 void editorInsertChar(int c) {
     if (E.cy == E.numrows) {

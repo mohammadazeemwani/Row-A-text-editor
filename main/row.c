@@ -1,5 +1,8 @@
-#include "text_editor.h"
 #include "data.h"
+#include "row.h"
+#include "syntax_highlighting.h"
+#include "terminal.h"
+#include "text_editor.h"
 
 void editorUpdateRow(erow *row) {
 	int tabs = 0;
@@ -37,9 +40,9 @@ void editorInsertRow(int at, char *s, size_t len) {
 		return;
 	}
 	E.row = new_rows;
+
 	memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (E.numrows - at));
 	for (int j = at + 1; j <= E.numrows; j++) E.row[j].idx++;
-
 
 	E.row[at].idx = at;
 

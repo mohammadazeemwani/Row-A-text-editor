@@ -1,5 +1,9 @@
+#include "terminal.h"
 #include "text_editor.h"
 #include "data.h"
+
+#include <errno.h>
+#include <windows.h>
 
 HANDLE hStdin;
 

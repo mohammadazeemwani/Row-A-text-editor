@@ -1,9 +1,17 @@
-#include <fcntl.h>
-#include <sys/types.h>
-#include <string.h>
-
-#include "text_editor.h"
 #include "data.h"
+#include "file.h"
+#include "input.h"
+#include "output.h"
+#include "row.h"
+#include "syntax_highlighting.h"
+#include "terminal.h"
+#include "text_editor.h"
+
+#include <fcntl.h>
+#include <io.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/types.h>
 
 // ChatGPT helped converting this to Windows.
 void editorOpen(char *filename) {

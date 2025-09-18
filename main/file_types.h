@@ -1,5 +1,6 @@
-#include "text_editor.h"
 #include "data.h"
+#include "text_editor.h"
+#include "syntax_highlighting.h"
 
 char *C_HL_extensions[] = { ".c", ".h", ".cpp", NULL };
 char *C_HL_keywords[] = {

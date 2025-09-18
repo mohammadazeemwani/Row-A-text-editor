@@ -1,7 +1,12 @@
-#include "text_editor.h"
 #include "data.h"
+#include "find.h"
+#include "input.h"
+#include "row.h"
+#include "syntax_highlighting.h"
+#include "terminal.h"
+#include "text_editor.h"
 
-void editorFindCallback(char *query, int key) {
+static void editorFindCallback(char *query, int key) {
     static int last_match = -1;
     static int direction = 1;
 

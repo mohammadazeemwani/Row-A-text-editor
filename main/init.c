@@ -1,7 +1,11 @@
-#include "text_editor.h"
 #include "data.h"
+#include "terminal.h"
+#include "text_editor.h"
+
+struct editorConfig E;
 
 void initEditor() {
+
 	E.cx = 0;
 	E.cy = 0;
 	E.rx = 0;

@@ -1,9 +1,12 @@
-﻿#include "text_editor.h"
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+﻿#include "file.h"
+#include "input.h"
+#include "output.h"
+#include "terminal.h"
+#include "text_editor.h"
+
+void initEditor();
 
 int main(int argc, char *argv[]) {
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_LEAK_CHECK_DF);
     enableRawMode();
     initEditor();
     if (argc >= 2) {

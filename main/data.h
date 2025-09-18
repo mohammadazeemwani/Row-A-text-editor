@@ -1,5 +1,5 @@
 #pragma once
-#include "text_editor.h"
+#include <windows.h>
 
 struct editorSyntax {
 	char *filetype;
@@ -39,4 +39,4 @@ struct editorConfig {
 	DWORD orig_mode;
 };
 
-struct editorConfig E;
+extern struct editorConfig E;

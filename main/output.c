@@ -1,10 +1,16 @@
-#include "text_editor.h"
 #include "data.h"
-#include "append_buffer.h"
+#include "output.h"
+#include "row.h"
+#include "syntax_highlighting.h"
+#include "text_editor.h"
 
+#include <io.h>
 #include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-void editorDrawRows(struct abuf *ab) {
+static void editorDrawRows(struct abuf *ab) {
 	int y;
 	E.lnwidth = snprintf(NULL, 0, "%d", E.numrows) + 1;
 

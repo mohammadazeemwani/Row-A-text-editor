@@ -1,6 +1,8 @@
-#include "text_editor.h"
 #include "data.h"
 #include "file_types.h"
+#include "syntax_highlighting.h"
+#include "terminal.h"
+#include "text_editor.h"
 
 int editorSyntaxToColor(int hl) {
     switch (hl) {

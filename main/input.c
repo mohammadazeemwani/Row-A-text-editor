@@ -1,7 +1,15 @@
-#include "text_editor.h"
 #include "data.h"
+#include "editor_operations.h"
+#include "file.h"
+#include "find.h"
+#include "output.h"
+#include "terminal.h"
+#include "text_editor.h"
 
-void editorMoveCursor(int key) {
+#include <io.h>
+#include <stdio.h>
+
+static void editorMoveCursor(int key) {
 	erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
 	switch (key) {
 	case ARROW_LEFT:
@@ -122,6 +130,8 @@ void editorProcessKeypress() {
 char *editorPrompt(char *prompt, void (*callback)(char *, int)) {
 	size_t bufsize = 128;
 	char *buf = malloc(bufsize);
+	if (!buf) die("editorPrompt - malloc");
+
 	size_t buflen = 0;
 	buf[0] = '\0';
 	while (1) {
@@ -147,8 +157,10 @@ char *editorPrompt(char *prompt, void (*callback)(char *, int)) {
 				//buf = realloc(buf, bufsize);
 				char *newbuf = realloc(buf, bufsize);
 				if (newbuf == NULL) {
+					free(buf);
 					die("editorPrompt - realloc");
 				}
+				buf = newbuf;
 			}
 			buf[buflen++] = c;
 			buf[buflen] = '\0';
